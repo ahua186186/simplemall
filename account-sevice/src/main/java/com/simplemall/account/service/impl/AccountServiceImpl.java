@@ -2,7 +2,6 @@ package com.simplemall.account.service.impl;
 
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import com.simplemall.micro.serv.common.bean.account.AccAddress;
 import com.simplemall.micro.serv.common.bean.account.AccAddressCriteria;
 import com.simplemall.micro.serv.common.bean.account.Account;
 import com.simplemall.micro.serv.common.bean.account.AccountCriteria;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class AccountServiceImpl implements IAccountService {
@@ -38,7 +38,8 @@ public class AccountServiceImpl implements IAccountService {
 		criteria.createCriteria().andPhoneEqualTo(phone).andPasswordEqualTo(password);
 		List<Account> list = accountMapper.selectByExample(criteria);
 		logger.info("{}登陆成功!",phone);
-		return CollectionUtils.isNotEmpty(list)?list.get(0):new Account();
+		return  CollectionUtils.isEmpty(list)?new Account():list.get(0);
+		//return CollectionUtils.isNotEmpty(list)?list.get(0):new Account();
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class AccountServiceImpl implements IAccountService {
 		AccountCriteria example = new AccountCriteria();
 		example.createCriteria().andPhoneEqualTo(phone);
 		List<Account> list = accountMapper.selectByExample(example);
-		if (CollectionUtils.isNotEmpty(list)) {
+		if (!CollectionUtils.isEmpty(list)) {
 			logger.warn("{}-用户已存在，请选择其它用户名!",phone);
 			return false;
 		}
