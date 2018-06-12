@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAdminServer //开启Spring Boot Admin 服务
 @SpringBootApplication
-@EnableDiscoveryClient
 public class AdminServerApplicaton {
 
 	public static void main(String[] args) {
