@@ -61,6 +61,7 @@ public class APIAccountController {
 		Account account = accountFeignClient.login(phone, password);
 		if (StringUtils.isEmpty(account.getTid())) {
 			restAPIResult = new RestAPIResult<>("登陆失败，用户名或密码不正确!");
+			restAPIResult.setRespData(null);
 		} else {
 			try {
 				// 正常情况返回jwt

@@ -6,11 +6,13 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.simplemall.micro.serv.common.constant.SystemConstants;
 import com.simplemall.micro.serv.common.service.JedisUtil;
+import redis.clients.jedis.JedisCluster;
 
 /**
  * 启动后就加载数据
@@ -21,6 +23,8 @@ import com.simplemall.micro.serv.common.service.JedisUtil;
 @Component
 public class StartUpLoading implements CommandLineRunner {
 	private Logger logger = LoggerFactory.getLogger(StartUpLoading.class);
+	@Autowired
+	private JedisCluster jedisCluster;
 
 	@Override
 	public void run(String... arg0) throws Exception {
@@ -33,8 +37,11 @@ public class StartUpLoading implements CommandLineRunner {
 		uris.add("/payment/pay");
 		
 		for (String uri : uris) {
-			JedisUtil.SETS.sadd(SystemConstants.URL_NEED_CHECK_KEY, uri);
+			jedisCluster.sadd(SystemConstants.URL_NEED_CHECK_KEY, uri);
+			//JedisUtil.SETS.sadd(SystemConstants.URL_NEED_CHECK_KEY, uri);
+
 		}
+		logger.info(">>>>>>启动后就加载数据完成");
 	}
 
 }

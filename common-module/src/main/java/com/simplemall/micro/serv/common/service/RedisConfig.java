@@ -8,11 +8,11 @@ package com.simplemall.micro.serv.common.service;
  */
 public class RedisConfig {
 
-	public static final String REDIS_IP = "192.168.1.102";
+	public static final String REDIS_IP = "10.91.19.101";
 	
-	public static final String AUTH = "a588a026b91c424cb7fa13267eb80e96";
+	public static final String AUTH = "";
 
-	public static final int PORT = 6379;
+	public static final int PORT = 6623;
 
 	public static final boolean TEST_ON_BORROW = true;
 

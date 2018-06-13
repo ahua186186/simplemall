@@ -6,8 +6,6 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
-
 import com.simplemall.micro.serv.common.util.UUIDUtils;
 
 import io.jsonwebtoken.Claims;
@@ -18,6 +16,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import org.springframework.util.Base64Utils;
 
 /**
  * ClassName: JWTUtils <br/>
@@ -38,7 +37,7 @@ public class JWTUtils {
 	 * @return
 	 */
 	public static SecretKey generalKey(String stringKey) {
-		byte[] encodedKey = Base64.decodeBase64(stringKey);
+		byte[] encodedKey = Base64Utils.decodeFromString(stringKey);
 		SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
 		return key;
 	}
@@ -53,7 +52,7 @@ public class JWTUtils {
 	 *            json形式字符串或字符串，增加用户非敏感信息存储，如user tid，与token解析后进行对比，防止乱用
 	 * @param ttlMillis
 	 *            有效期
-	 * @param stringKey
+	 * @param
 	 * @return jwt token
 	 * @throws Exception
 	 * @since JDK 1.6
@@ -78,7 +77,7 @@ public class JWTUtils {
 	 *
 	 * @author guooo
 	 * @param jwt
-	 * @param stringKey
+	 * @param
 	 * @return
 	 * @throws ExpiredJwtException
 	 * @throws UnsupportedJwtException

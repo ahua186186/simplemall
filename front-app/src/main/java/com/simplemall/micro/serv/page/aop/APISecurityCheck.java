@@ -10,6 +10,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -23,6 +24,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import redis.clients.jedis.JedisCluster;
 
 @Aspect
 @Order(0)
@@ -30,6 +32,8 @@ import io.jsonwebtoken.UnsupportedJwtException;
 public class APISecurityCheck {
 
 	private Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
+	@Autowired
+	private JedisCluster jedisCluster;
 
 	/**
 	 * 客户端给出的签名字段
@@ -41,7 +45,7 @@ public class APISecurityCheck {
 	 * 
 	 * @param joinPoint
 	 * @throws Exception
-	 * @throws BusinessException
+	 * @throws
 	 */
 	@Before("execution(public * com.simplemall.micro.serv.page.api.*.* (..))")
 	public void doBeforeInService(JoinPoint joinPoint) throws Exception {
@@ -58,7 +62,10 @@ public class APISecurityCheck {
 			String value = ((String[]) inputParamMap.get(currKey))[0].toString();
 			if (access_token.equals(currKey)) {
 				//验证此jwt是否已经被注销，由于jwt在有效期均有效，本案例借助redis实现注销机制
-				if(JedisUtil.KEYS.exists(value)){
+				/*if(JedisUtil.KEYS.exists(value)){
+					throw new Exception("token已注销，请勿重复使用！");
+				}*/
+				if(jedisCluster.exists(value)){
 					throw new Exception("token已注销，请勿重复使用！");
 				}
 				try {
